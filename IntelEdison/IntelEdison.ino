@@ -34,6 +34,9 @@ const int iOctave = 3;
 //=================================================
 MMA7660 accelemeter;
 rgb_lcd lcd;
+
+int iCurrentNote = NOTE_BASE;
+int iCurrentVolume = 0;
 //=================================================
 void setup() {
   // put your setup code here, to run once:
@@ -70,7 +73,7 @@ void setup() {
 //}
 //=================================================
 void loop() {
-  int NOTES[] = { 1, 1, 2, 3, 3, 2, 1, 2, 3, 1 } ;
+  //int NOTES[] = { 1, 1, 2, 3, 3, 2, 1, 2, 3, 1 } ;
   // put your main code here, to run repeatedly:
   // [1] Update the current acc of each axis
   float ax, ay, az;
@@ -96,13 +99,21 @@ void loop() {
   int iLoud = MapLoudness( ax );
   int iNote = MapPitch( ay );
   
-  noteOn(0x90, iOctave, iNote, iLoud);
+  // If note has changed from current note, turn it off before playing the 
+  // new note
+  if( iNote != iCurrentNote || iLoud != iCurrentVolume )
+  {
+    noteOff(0x90, iOctave, iCurrentNote);
+    iCurrentNote = iNote;
+    iCurrentVolume = iLoud;
+    noteOn(0x90, iOctave, iCurrentNote, iCurrentVolume);
+  }
   
   // Debug output
   lcd.setCursor(0, 0); 
-    lcd.print(iLoud);
+    lcd.print(iCurrentVolume);
     lcd.print(" - ");
-    lcd.print(iNote);
+    lcd.print(iCurrentNote);
     lcd.print("          "); // For cleaning up stray output
   lcd.setCursor(0, 1);
     lcd.print(ax);
@@ -112,8 +123,8 @@ void loop() {
     lcd.print(az);
     lcd.print("          "); // For cleaning up stray output
 
-  delay(200);
-  noteOff(0x90, iOctave, iNote);
+  //delay(200);
+  //noteOff(0x90, iOctave, iNote);
   delay(300);
   return;
 }
@@ -156,7 +167,7 @@ bool isBetween( float fVal, float fA, float fB )
 
 int MapLoudness( float fAclX )
 {
-  int iMidiVal = kiMidiVelocity[LOUDNESS_TOTAL - 1];
+  int iMidiVal = kiMidiVelocity[0];
   bool bFound = false;
   for( int i = 0; i < LOUDNESS_TOTAL && !bFound; i++ )
  {
@@ -166,6 +177,12 @@ int MapLoudness( float fAclX )
      iMidiVal = kiMidiVelocity[i];
    }
  }
+ 
+ if( !bFound )
+ {
+   iMidiVal = kiMidiVelocity[LOUDNESS_TOTAL - 1];
+ }
+ 
   return iMidiVal; 
 }
 
@@ -180,6 +197,11 @@ int MapPitch( float fAclY )
      bFound = true;
      iMidiVal = kiMidiPitch[i];
    }
+ }
+ 
+ if( !bFound )
+ {
+   iMidiVal = kiMidiPitch[PITCH_TOTAL - 1];
  }
  return iMidiVal;
 }
