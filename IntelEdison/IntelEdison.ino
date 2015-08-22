@@ -54,47 +54,11 @@ void setup() {
   return;
 }
 //=================================================
-//void playNote(int scale, int note, int duration) {
-//  //int tones[] = { 1915, 1700, 1519, 1432, 1275, 1136, 1014, 956 };
-//  int tones[7 * 7] = { PRERIOD_NOTE_C1, PRERIOD_NOTE_D1, PRERIOD_NOTE_E1, PRERIOD_NOTE_F1, PRERIOD_NOTE_G1, PRERIOD_NOTE_A1, PRERIOD_NOTE_B1,
-//                       PRERIOD_NOTE_C2, PRERIOD_NOTE_D2, PRERIOD_NOTE_E2, PRERIOD_NOTE_F2, PRERIOD_NOTE_G2, PRERIOD_NOTE_A2, PRERIOD_NOTE_B2,
-//                       PRERIOD_NOTE_C3, PRERIOD_NOTE_D3, PRERIOD_NOTE_E3, PRERIOD_NOTE_F3, PRERIOD_NOTE_G3, PRERIOD_NOTE_A3, PRERIOD_NOTE_B3,
-//                       PRERIOD_NOTE_C4, PRERIOD_NOTE_D4, PRERIOD_NOTE_E4, PRERIOD_NOTE_F4, PRERIOD_NOTE_G4, PRERIOD_NOTE_A4, PRERIOD_NOTE_B4,
-//                       PRERIOD_NOTE_C5, PRERIOD_NOTE_D5, PRERIOD_NOTE_E5, PRERIOD_NOTE_F5, PRERIOD_NOTE_G5, PRERIOD_NOTE_A5, PRERIOD_NOTE_B5,
-//                       PRERIOD_NOTE_C6, PRERIOD_NOTE_D6, PRERIOD_NOTE_E6, PRERIOD_NOTE_F6, PRERIOD_NOTE_G6, PRERIOD_NOTE_A6, PRERIOD_NOTE_B6,
-//                       PRERIOD_NOTE_C7, PRERIOD_NOTE_D7, PRERIOD_NOTE_E7, PRERIOD_NOTE_F7, PRERIOD_NOTE_G7, PRERIOD_NOTE_A7, PRERIOD_NOTE_B7
-//                     };
-//
-//  // play the tone corresponding to the note name
-//  tone(PIN_DIGITAL_BUZZER, tones[scale * 7 + note - 1], duration);
-//  noTone(8);
-//
-//  return;
-//}
-//=================================================
 void loop() {
-  //int NOTES[] = { 1, 1, 2, 3, 3, 2, 1, 2, 3, 1 } ;
-  // put your main code here, to run repeatedly:
   // [1] Update the current acc of each axis
   float ax, ay, az;
-//  Serial.println("accleration of X/Y/Z: ");
-//  Serial.print(ax);
-//  Serial.println(" g");
-//  Serial.print(ay);
-//  Serial.println(" g");
-//  Serial.print(az);
-//  Serial.println(" g");
-//  Serial.println("*************");
 
   accelemeter.getAcclemeter(&ax, &ay, &az);
-
-//  for (int i = 0; i < (sizeof(NOTES) / sizeof(int)); i++) {
-//    if (ax < -1) ax = -1;
-//    if (ax > 1) ax = 1;
-//
-//    playNote(abs(ax) * 6, NOTES[i], 100 + abs(ay) * 100);
-//    delay(50);
-//  }
 
   int iLoud = MapLoudness( ax );
   int iNote = MapPitch( ay );
@@ -123,8 +87,6 @@ void loop() {
     lcd.print(az);
     lcd.print("          "); // For cleaning up stray output
 
-  //delay(200);
-  //noteOff(0x90, iOctave, iNote);
   delay(300);
   return;
 }
